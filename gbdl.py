@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup   # For scraping webpages
 #parser = argparse.ArgumentParser(description="Downloads BIOSes for GIGABYTE motherboards")
 
 user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0"
-gb_url = "https://www.gigabyte.com/Motherboard/B450M-DS3H-rev-1x"
+gb_url = "https://www.gigabyte.com/Motherboard/X570-AORUS-ELITE-rev-10"
 
 # Get the pages and setup Soup scraping for them
 main_page = requests.get(gb_url, headers={"User-Agent": user_agent})
@@ -40,7 +40,15 @@ for row in bios_downloads:
     if download.status_code == 200:
         # Open file with the filename from the URL and write the content to it
         filename = os.path.basename(urllib.parse.urlparse(download_url).path)
-        with open((os.path.normpath(board_name + "/" + filename)), "wb") as file:
-            file.write(download.content)
+        target_path = (os.path.normpath(board_name + "/" + filename))
+
+        # Write downloaded BIOS file to the file if it doesn't already exist
+        if not os.path.exists(target_path):
+            with open(target_path, "wb") as file:
+                file.write(download.content)
+        else:
+            print("{} already exists, skipping...".format(target_path))
+    else:
+        print("Response code was not 200 OK")
 
 print("Done!")
