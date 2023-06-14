@@ -1,14 +1,14 @@
 # gbdl.py - GIGABYTE BIOS downloader utility
 
-#import argparse # For parsing command line arguments
-import os # For filesystem access
-import urllib.parse # For parsing filenames out of URLs
-import requests # For making requests to the website
-from bs4 import BeautifulSoup # For scraping webpages
+#import argparse                # For parsing command line arguments
+import os                       # For filesystem access
+import urllib.parse             # For parsing filenames out of URLs
+import requests                 # For making requests to the website
+from bs4 import BeautifulSoup   # For scraping webpages
 
 #parser = argparse.ArgumentParser(description="Downloads BIOSes for GIGABYTE motherboards")
 
-user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:98.0) Gecko/20100101 Firefox/98.0"
+user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0"
 gb_url = "https://www.gigabyte.com/Motherboard/B450M-DS3H-rev-1x"
 
 # Get the pages and setup Soup scraping for them
