@@ -2,14 +2,15 @@
 
 #import argparse                # For parsing command line arguments
 import os                       # For filesystem access
+import hashlib                  # For calculating MD5 hash of downloads
 import urllib.parse             # For parsing filenames out of URLs
 import requests                 # For making requests to the website
 from bs4 import BeautifulSoup   # For scraping webpages
 
 #parser = argparse.ArgumentParser(description="Downloads BIOSes for GIGABYTE motherboards")
 
-user_agent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/114.0"
-gb_url = "https://www.gigabyte.com/Motherboard/X570-AORUS-ELITE-rev-10"
+user_agent = "Mozilla/5.0 (X11; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/117.0"
+gb_url = "https://www.gigabyte.com/Motherboard/GA-970A-UD3P-rev-10"
 
 # Get the pages and setup Soup scraping for them
 main_page = requests.get(gb_url, headers={"User-Agent": user_agent})
@@ -31,10 +32,19 @@ bios_downloads = support_soup.find_all(class_="div-table-row div-table-body-BIOS
 for row in bios_downloads:
     # Locate BIOS download URL
     download_url = row.find("a").get("href")
+    expected_md5 = str(download_url).split("?v=")[1]
     print("Downloading: " + download_url + " ...")
 
     # Download the file
     download = requests.get(download_url, allow_redirects=True)
+
+    # Check MD5 hash
+    calculated_md5 = hashlib.md5()
+    calculated_md5.update(download.content)
+    if calculated_md5.hexdigest() != expected_md5:
+        print("[WARNING] FAILED TO MATCH MD5 HASH, PROCEED WITH CAUTION")
+    else:
+        print("Succesfully matched MD5 hash")
 
     # If successful ...
     if download.status_code == 200:
